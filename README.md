@@ -4,7 +4,7 @@
 
 **DSH 崩了，会话文件还在 —— 把里面的对话抢回来。**
 
-[DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) 崩溃后，配置可以回退、文件结构可以修复（见下方邻居项目），但崩掉会话里的**对话原文**，截至 2026-10-26 检索仍没有任何公开工具能读出来。本工具逐帧解码 `session.v4.jsonl.zstd`，把对话上下文抢救成 Markdown。
+[DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness) 崩溃后，配置可以回退、文件结构可以修复（见下方同行地图），但崩掉会话里的**对话原文**，截至 2026-10-26 检索（GitHub 站内：`session.v4.jsonl.zstd` / DSH 会话读取）未见针对桌面版 v4 格式的公开读取工具。本工具逐帧解码 `session.v4.jsonl.zstd`，把对话上下文抢救成 Markdown。
 
 ## 症状决策表 —— 先对症状，再动手
 
@@ -15,6 +15,7 @@
 | 会话文件打不开 / 普通解压只读出 header | **本工具**：逐帧解码，坏帧跳过继续读 |
 | 想抢回崩死会话里的对话原文 | **本工具** `--md` 导出 Markdown |
 | DSH 没崩，只想导出/翻看历史会话 | 也用**本工具**，日常可用 |
+| 中文 Windows 反复崩溃 / Linux 启动即崩 / 中文路径打不开 | [docs/casebook.md](docs/casebook.md) 病历 #010 / #011 / #013 |
 | 想知道「为什么会崩」 | [docs/casebook.md](docs/casebook.md)：崩溃病历库 |
 | 想重装又怕丢数据 | [docs/casebook.md](docs/casebook.md) 病历 #006：分层决策树 + 保全清单 |
 
@@ -61,11 +62,21 @@ node session-rescue.mjs "C:\Users\你\.dsh\sessions"
 - **安全边界**：只读输入文件，仅写入 `--md` 指定的输出路径；不联网，不执行会话内容
 - 只解析官方 DeepSeek Harness 的会话格式；其他生态的 JSONL 会话能读但解析出 0 条消息
 
-## 邻居与鸣谢
+## 同行地图与鸣谢（截至 2026-10-27，GitHub 站内检索）
+
+会话损坏后的分工，先对号入座：
+
+| 需求 | 去哪 |
+|---|---|
+| 修官方 v0 格式会话到能继续用 | [po-et/dsh-session-rescue](https://github.com/po-et/dsh-session-rescue) |
+| rm -rf 后从原始磁盘捞会话/记忆库 | [Coprexist/dsh-session-recovery](https://github.com/Coprexist/dsh-session-recovery) |
+| 更多修复/备份工具（未逐一审计，用前自担风险） | [docs/casebook.md](docs/casebook.md) 延伸阅读 |
+| **桌面版 v4 多帧 zstd 会话的内容抢救** + 中文急救病历库 | **本工具** |
+
+老邻居：
 
 - [dsh-undo-savepoint](https://github.com/lire1131/dsh-undo-savepoint)：安全管家——自动快照、一键回退、安全模式、会话结构修复，管「修文件」
 - [dsh-crash-guard](https://github.com/EXarchive/dsh-crash-guard)：崩溃防护补丁——防 ECONNRESET / worker 崩溃，管「不崩」
-- 本工具管第三件没人做的事：把崩死会话里的**对话内容**抢出来
 
 ## 维护声明（先小人后君子）
 
